@@ -10,7 +10,6 @@ class MedicineSpider(scrapy.Spider):
     
 
     def parse(self, response):
-        # lst = ['aspirin','Thiopentone','Prilocaine']
         df = pd.read_excel('salts.xlsx')
         salts = df['Salt Name']
         for salt in salts[2:]:
@@ -54,9 +53,6 @@ class MedicineSpider(scrapy.Spider):
         # prescription info (check on page where precription is not required)
         prescription = response.xpath('//*[@class="pres_txt"]/text()').extract()[0]
 
-        # # list of all the benifits and uses
-        # benifits = response.xpath('//*[@class="product_list"]/ul/li/a/text()').extract()
-
         # pregnant, breastfeeding, kidneys , liver ,heart (this will work side_effects = only if all are present and in the same order)
         warnings = response.xpath('//*[@class="inline_item"]/div/span/text()').extract()[:5]
         pregnant_warning = []
@@ -83,12 +79,6 @@ class MedicineSpider(scrapy.Spider):
             kidney_text = warnings_text[2]
             liver_text = warnings_text[3]
             heart_text = warnings_text[4]
-
-        # # severe and moderate Interactions
-        # interactions = response.xpath('//*[@class="product_head"]/ul/li/a/text()').extract()
-        # interactions = response.xpath('//div[@class="product_head"]')[2]
-        # interactions_list = interactions.xpath('.//a/text()').extract()
-
 
         # Interaction with food and alcohol
         food_alcohol = response.xpath('//*[@class="inline_item"]/div/span/text()').extract()[-2:]
@@ -129,41 +119,4 @@ class MedicineSpider(scrapy.Spider):
             'Food warning': food_warning,
             'Alcohol text': alcohol_text,
             'Alcohol warning': alcohol_warning
-            # 'Benifits':benifits,
-            # 'Contradictions':contradictions,
-            # 'Interactions':interactions
             }
-
-        # # the below can be used for benifits, side effects and contraindications as all of these are in the form of table
-        # # table 1 benifits
-        # # table 2 side effects
-        # # table 3 contraindications
-        # benifits = response.xpath('//ul[@class="product_item_list"]')[0]
-        # benifits.xpath('.//li/a/text()').extract()   # for benifits table , condition is that all the elements should be in the form of links
-
-        # side_effects = response.xpath('//ul[@class="product_item_list"]')[1]
-        # sideEffects1 = side_effects.xpath('.//li/text()').extract()  # for normal text
-        # sideEffects2 = side_effects.xpath('.//li/a/text()').extract()  # for link like text
-        # sideEffects = sideEffects1.extends(sideEffects2)
-        # finalSideEffects = []
-        # for x in sideEffects:
-        #     if x not in [""," "]:
-        #         finalSideEffects.append[x]
-
-        # contraindications = response.xpath('//ul[@class="product_item_list"]')[2]
-        # contraindications_list = contraindications.xpath('.//li/text()').extract()
-
-        # yield {
-        #     'Name':name,
-        #     'Manufracturer':manufracturer,
-        #     'Salt':salt,
-        #     'Price':price,
-        #     'Pack size label': packSize,
-        #     'Prescription':prescription,
-
-        #     'Benifits':benifits,
-        #     'Contradictions':contradictions,
-        #     'Interactions':interactions
-        #     }
-
-    
